@@ -14,25 +14,25 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        stage('Copying war file') {
+        stage('Copying jar file') {
             steps {
-                echo 'Copying war file..'
-                sh 'mv target/*.war .'
+                echo 'Copying jar file..'
+                sh 'mv target/*.jar .'
             }
         }
         stage('cleanup') {
             steps {
-                sh 'docker system prune -a --volumes --force --filter "label=devops-web-project-server"'
+                sh 'docker system prune -a --volumes --force --filter "label=campaign-demo-server"'
             }
         }
         stage('build image') {
             steps {
-                sh 'docker build -t albertoperez9/devops-web-project:v1 --label devops-web-project-server .'
+                sh 'docker build -t albertoperez9/campaign-demo:v1 --label campaign-demo-server .'
             }
         }
         stage('run container') {
             steps {
-                sh 'docker run -d --name devops-web-project-server --label devops-web-project-server -p 8081:8080 albertoperez9/devops-web-project:v1'
+                sh 'docker run -d --name campaign-demo-server --label campaign-demo-server -p 5000:5000 albertoperez9/campaign-demo:v1'
             }
         }
     }
